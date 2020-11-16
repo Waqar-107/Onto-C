@@ -1,3 +1,10 @@
+lex.yy.c
+*.asm
+*.output
+y.tab.c
+y.tab.h
+*.txt
+
 # Prerequisites
 *.d
 
