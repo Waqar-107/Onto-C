@@ -25,6 +25,7 @@ string isReturningType;
 
 extern FILE *yyin;
 FILE *error,*asmCode,*optimized_asmCode;
+FILE *owlWriter, *owlReader;
 
 SymbolTable table(10);
 SymbolInfo *currentFunction;
@@ -61,6 +62,30 @@ string stoi(int n)
 
 	reverse(temp.begin(),temp.end());
 	return temp;
+}
+
+void readBaseOwl()
+{
+	string str;
+	while(getline(cin, str)) {
+		cout << str << endl;
+	}
+}
+
+// var_name: variable name
+// var_type: type of the variable, e.g: int, float
+// var_scope: global or local: Local_Variable or Global_Variable
+void writeVariableDeclaration(string var_name, string var_type, string var_scope)
+{
+	cout << "<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<<var_name<<"\">" << endl;
+    cout << "<rdf:type>" << endl;
+    cout << "<owl:Restriction>"<< endl;
+    cout << "<owl:onProperty rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType\"/>" << endl;
+    cout << "<owl:allValuesFrom rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
+    cout << "</owl:Restriction>" << endl;
+    cout << "</rdf:type>" << endl;
+    cout << "<hasType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_type << "\"/>" << endl;
+    cout << "</owl:NamedIndividual>" << endl;
 }
 
 void fillScopeWithParams()
@@ -711,9 +736,10 @@ compound_statement : LCURL statements RCURL
 var_declaration : type_specifier declaration_list SEMICOLON
 		{
 			$$=new SymbolInfo("var_declaration","var_declaration");
-			cout << "test variable type "<<variable_type<<endl;
+			//cout << "test variable type "<<<<endl;
 			for(pair<string, string> p : variableListForInit){
-				cout << p.first << "  " << p.second << endl;
+				// cout << p.first << "  " << p.second << endl;
+				writeVariableDeclaration(p.first, variable_type, "Global_Variable");
 			}
 			$2->edge.clear();
 		}
@@ -1712,18 +1738,21 @@ int main(int argc,char *argv[])
 
 	asmCode=fopen(argv[3],"w");
 	fclose(asmCode);
-
-	optimized_asmCode=fopen(argv[4],"w");
-	fclose(optimized_asmCode);
 	
 	error=fopen(argv[2],"a");
 	asmCode=fopen(argv[3],"a");
-	optimized_asmCode=fopen(argv[4],"a");
 	
 	isReturning=false; currentFunction=0;
 	cnt_err=0; returnType_curr="none";
 
+	// read the base owl file andd write it to the output file
+	freopen("onto.txt", "r", stdin);
+	freopen("codeontology.owl", "w", stdout);
+	readBaseOwl();
+
 	yyparse();
+
+	cout << "</rdf:RDF>" << endl;
 
 	//print the SymbolTable and other credentials
 	fprintf(error,"total lines read: %d\n",line-1);
@@ -1732,10 +1761,7 @@ int main(int argc,char *argv[])
 	fclose(error);
 	fclose(asmCode);
 
-	freopen("code.asm","r",stdin);
-	optimizeCode();
 	
-	fclose(optimized_asmCode);
 	
 	return 0;
 }
