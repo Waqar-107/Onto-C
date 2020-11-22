@@ -21,6 +21,22 @@
     
 
 
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasType -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasType">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#isArrayOf -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#isArrayOf">
@@ -177,6 +193,20 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int">
         <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Primitive_Type"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#var1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#var1">
+        <rdf:type>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType"/>
+                <owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Global_Variable"/>
+            </owl:Restriction>
+        </rdf:type>
+        <hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
     </owl:NamedIndividual>
 </rdf:RDF>
 
