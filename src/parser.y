@@ -324,7 +324,7 @@ program : program unit {
 	
 unit : var_declaration {
 		   	$$=$1;
-			cout << $$->getVariableType() << endl;
+			//cout << $$->getVariableType() << endl;
    	   	}
      | func_declaration {
 		   	$$=$1;
@@ -502,7 +502,7 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 									x->params.push_back(params[i]);
 
 								x->id=id;
-								currentFunction=x;cout<<var_list.size()<<" "<<$2->getName()<<endl;
+								currentFunction=x;//cout<<var_list.size()<<" "<<$2->getName()<<endl;
 							}
 
 							else{
@@ -530,7 +530,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 					x->edge.push_back(var_list[i]);
 				}
 
-				currentFunction=x;cout<<var_list.size()<<" "<<$2->getName()<<endl;
+				currentFunction=x;
+				//cout<<var_list.size()<<" "<<$2->getName()<<endl;
 				for(int i=0;i<params.size();i++)
 					x->params.push_back(params[i]);
 				x->id=id;
@@ -634,7 +635,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 								x->edge.push_back(var_list[i]);
 							}
 
-							currentFunction=x;cout<<var_list.size()<<" "<<$2->getName()<<endl;
+							currentFunction=x;
+							//cout<<var_list.size()<<" "<<$2->getName()<<endl;
 						}
 
 						else{
@@ -654,7 +656,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 					x->edge.push_back(var_list[i]);
 				}
 
-				currentFunction=x;cout<<var_list.size()<<" "<<$2->getName()<<endl;
+				currentFunction=x;
+				//cout<<var_list.size()<<" "<<$2->getName()<<endl;
 				x->setVariableType($1->getType());
 			}
 
@@ -773,10 +776,6 @@ declaration_list : declaration_list COMMA ID
 			//---------------------------------------------------------------------
 			//code generation
  			variableListForInit.push_back({$3->getName()+stoi(table.getCurrentID()),"0"});
-			cout << "variable type "<<variable_type<<endl;
-			for(pair<string, string> p : variableListForInit){
-				cout << p.first << "  " << p.second << endl;
-			}
  			//---------------------------------------------------------------------
 
 			$3->setIdentity("var");
