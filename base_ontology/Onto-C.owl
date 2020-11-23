@@ -138,14 +138,6 @@
     
 
 
-    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Type -->
-
-    <owl:Class rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Type">
-        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Code_Element"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Variable -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Variable">
@@ -165,22 +157,6 @@
     
 
 
-    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#char -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#char">
-        <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Primitive_Type"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#double -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#double">
-        <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Primitive_Type"/>
-    </owl:NamedIndividual>
-    
-
-
     <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float">
@@ -197,16 +173,10 @@
     
 
 
-    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#var1 -->
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#void -->
 
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#var1">
-        <rdf:type>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType"/>
-                <owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Global_Variable"/>
-            </owl:Restriction>
-        </rdf:type>
-        <hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#void">
+        <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Primitive_Type"/>
     </owl:NamedIndividual>
 </rdf:RDF>
 
