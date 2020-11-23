@@ -138,6 +138,14 @@
     
 
 
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Type -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Type">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Code_Element"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Variable -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Variable">
