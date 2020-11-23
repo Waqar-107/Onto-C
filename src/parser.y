@@ -78,6 +78,7 @@ void readBaseOwl()
 void writeVariableDeclaration(string var_name, string var_type, string var_scope)
 {
 	cout << "<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<<var_name<<"\">" << endl;
+	cout << "<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
     cout << "<rdf:type>" << endl;
     cout << "<owl:Restriction>"<< endl;
     cout << "<owl:onProperty rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType\"/>" << endl;
@@ -125,91 +126,6 @@ string newTemp()
 	return temp;
 }
 
-void optimizeCode()
-{
-    string str;
-    string sx="null",sy="null";
-    int cnt=0;
-
-    while(getline(cin,str))
-    {
-        //check for MOV x, y
-        int i,j,k;
-        cnt++;
-
-        if(str.find("MOV")!=string::npos)
-        {
-            //first find end of mov
-            k=0;j=-1;
-            while(k<str.length())
-            {
-                if(str[k]=='M' && str[k+1]=='O' && str[k+2]=='V'){
-                    j=k+3;
-                    break;
-                }
-
-                k++;
-            }
-
-            //now from j till end split the string
-            string x,y;
-
-            k=1;
-            for(i=j;i<str.length();i++)
-            {
-                if(str[i]==',')
-                    k=2;
-
-                else if(str[i]!=' '){
-                    if(k==1)
-                        x.push_back(str[i]);
-                    else
-                        y.push_back(str[i]);
-                }
-            }
-
-            //MOV x,y
-            //now we optimize
-            if(x=="AH" && (y=="1" || y=="2"))
-                fprintf(optimized_asmCode,"%s\n",str.c_str());
-
-            else
-            {
-            	//cout<<str<<endl;
-                if(sx!="null" && sy!="null")
-                {
-                	//skip this line
-                	if(x==sy && y==sx){
-                		sx="null";sy="null";
-                		//cout<<"mov "<<sx<<", "<<sy<<endl;
-                		//cout<<"mov "<<x<<" ,"<<y<<endl;
-                	}
-
-                	else{
-                		 sx=x, sy=y;
-                		 fprintf(optimized_asmCode,"%s\n",str.c_str());
-                	}
-
-                }
-
-                else{
-                	sx=x, sy=y;
-                	fprintf(optimized_asmCode,"%s\n",str.c_str());
-                }
-            }
-        }
-
-        else
-        {
-        	if(str.length())
-        		sx="null", sy="null";
-
-         	fprintf(optimized_asmCode,"%s\n",str.c_str());
-        }
-
-        //cout<<cnt<<" "<<str<<"  | "<<sx<<" "<<sy<<endl;
-    }
-}
 
 %}
 
@@ -324,7 +240,6 @@ program : program unit {
 	
 unit : var_declaration {
 		   	$$=$1;
-			//cout << $$->getVariableType() << endl;
    	   	}
      | func_declaration {
 		   	$$=$1;
@@ -739,12 +654,14 @@ compound_statement : LCURL statements RCURL
 var_declaration : type_specifier declaration_list SEMICOLON
 		{
 			$$=new SymbolInfo("var_declaration","var_declaration");
-			//cout << "test variable type "<<<<endl;
-			for(pair<string, string> p : variableListForInit){
-				// cout << p.first << "  " << p.second << endl;
-				writeVariableDeclaration(p.first, variable_type, "Global_Variable");
+			for(pair<string, string> p : variableListForInit)
+			{
+				if(table.getCurrentID() == 1) writeVariableDeclaration(p.first, variable_type, "Global_Variable");
+				else writeVariableDeclaration(p.first, variable_type, "Local_Variable");
 			}
+			
 			$2->edge.clear();
+			variableListForInit.clear();
 		}
  		 ;
  		 
@@ -757,14 +674,14 @@ type_specifier : INT
 		}
  		| FLOAT
  		{
-			variable_type="float";
+			variable_type = "float";
 
 			SymbolInfo *newSymbol = new SymbolInfo("float");
 			$$ = newSymbol;
 		}
  		| VOID
  		{
-			variable_type="void";
+			variable_type = "void";
 
 			SymbolInfo *newSymbol = new SymbolInfo("void");
 			$$ = newSymbol;
@@ -1745,7 +1662,7 @@ int main(int argc,char *argv[])
 	cnt_err=0; returnType_curr="none";
 
 	// read the base owl file andd write it to the output file
-	freopen("onto.txt", "r", stdin);
+	freopen("base_onto.owl", "r", stdin);
 	freopen("codeontology.owl", "w", stdout);
 	readBaseOwl();
 
