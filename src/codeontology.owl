@@ -253,4 +253,16 @@
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
 	</owl:NamedIndividual>
 
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#arr2">
+		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
+		<rdf:type>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType"/>
+				<owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
+			</owl:Restriction>
+		</rdf:type>
+		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
+		<Dimension rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</Dimension>
+	</owl:NamedIndividual>
+
 </rdf:RDF>

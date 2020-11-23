@@ -3,4 +3,5 @@ float f, e;
 
 void foo(){
     int bar;
+    int arr[11];
 }
