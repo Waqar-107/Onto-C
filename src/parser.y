@@ -77,16 +77,16 @@ void readBaseOwl()
 // var_scope: global or local: Local_Variable or Global_Variable
 void writeVariableDeclaration(string var_name, string var_type, string var_scope)
 {
-	cout << "<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<<var_name<<"\">" << endl;
-	cout << "<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
-    cout << "<rdf:type>" << endl;
-    cout << "<owl:Restriction>"<< endl;
-    cout << "<owl:onProperty rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType\"/>" << endl;
-    cout << "<owl:allValuesFrom rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
-    cout << "</owl:Restriction>" << endl;
-    cout << "</rdf:type>" << endl;
-    cout << "<hasType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_type << "\"/>" << endl;
-    cout << "</owl:NamedIndividual>" << endl;
+	cout << "\t<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<<var_name<<"\">" << endl;
+	cout << "\t\t<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
+    cout << "\t\t<rdf:type>" << endl;
+    cout << "\t\t\t<owl:Restriction>"<< endl;
+    cout << "\t\t\t\t<owl:onProperty rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType\"/>" << endl;
+    cout << "\t\t\t\t<owl:allValuesFrom rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
+    cout << "\t\t\t</owl:Restriction>" << endl;
+    cout << "\t\t</rdf:type>" << endl;
+    cout << "\t\t<hasType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_type << "\"/>" << endl;
+    cout << "\t</owl:NamedIndividual>" << endl << endl;
 }
 
 void fillScopeWithParams()
