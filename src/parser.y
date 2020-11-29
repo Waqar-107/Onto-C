@@ -88,6 +88,7 @@ void writeVariableDeclaration(string var_name, string var_type, string var_scope
     cout << "\t\t<hasType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_type << "\"/>" << endl;
 	if(arraySz)
 		cout << "\t\t<Dimension rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">" << arraySz << "</Dimension>" << endl;
+	cout << "\t\tName rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">" << var_name << "</Name>" << endl;
     cout << "\t</owl:NamedIndividual>" << endl << endl;
 }
 
