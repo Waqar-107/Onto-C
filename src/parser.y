@@ -75,18 +75,20 @@ void readBaseOwl()
 // var_name: variable name
 // var_type: type of the variable, e.g: int, float
 // var_scope: global or local: Local_Variable or Global_Variable
-void writeVariableDeclaration(string var_name, string var_type, string var_scope)
+void writeVariableDeclaration(string var_name, string var_type, string var_scope, int arraySz)
 {
-	cout << "<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<<var_name<<"\">" << endl;
-	cout << "<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
-    cout << "<rdf:type>" << endl;
-    cout << "<owl:Restriction>"<< endl;
-    cout << "<owl:onProperty rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType\"/>" << endl;
-    cout << "<owl:allValuesFrom rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
-    cout << "</owl:Restriction>" << endl;
-    cout << "</rdf:type>" << endl;
-    cout << "<hasType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_type << "\"/>" << endl;
-    cout << "</owl:NamedIndividual>" << endl;
+	cout << "\t<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<<var_name<<"\">" << endl;
+	cout << "\t\t<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
+    cout << "\t\t<rdf:type>" << endl;
+    cout << "\t\t\t<owl:Restriction>"<< endl;
+    cout << "\t\t\t\t<owl:onProperty rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType\"/>" << endl;
+    cout << "\t\t\t\t<owl:allValuesFrom rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
+    cout << "\t\t\t</owl:Restriction>" << endl;
+    cout << "\t\t</rdf:type>" << endl;
+    cout << "\t\t<hasType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_type << "\"/>" << endl;
+	if(arraySz)
+		cout << "\t\t<Dimension rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">" << arraySz << "</Dimension>" << endl;
+    cout << "\t</owl:NamedIndividual>" << endl << endl;
 }
 
 void fillScopeWithParams()
@@ -656,8 +658,8 @@ var_declaration : type_specifier declaration_list SEMICOLON
 			$$=new SymbolInfo("var_declaration","var_declaration");
 			for(pair<string, string> p : variableListForInit)
 			{
-				if(table.getCurrentID() == 1) writeVariableDeclaration(p.first, variable_type, "Global_Variable");
-				else writeVariableDeclaration(p.first, variable_type, "Local_Variable");
+				if(table.getCurrentID() == 1) writeVariableDeclaration(p.first, variable_type, "Global_Variable", stoi(p.second));
+				else writeVariableDeclaration(p.first, variable_type, "Local_Variable", stoi(p.second));
 			}
 			
 			$2->edge.clear();
