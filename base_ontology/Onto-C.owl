@@ -71,9 +71,9 @@
     
 
 
-    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#isReuturnedBy -->
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#isReturnedBy -->
 
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#isReuturnedBy">
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#isReturnedBy">
         <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
         <owl:inverseOf rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#returns"/>
     </owl:ObjectProperty>
@@ -241,31 +241,10 @@
     
 
 
-    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#argTest -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#argTest">
-        <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Parameter"/>
-        <hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-        <isArgumentOf rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#foo"/>
-        <Name>argTest</Name>
-    </owl:NamedIndividual>
-    
-
-
     <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float">
         <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Primitive_Type"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#foo -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#foo">
-        <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function"/>
-        <hasArgument rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#argTest"/>
-        <hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
     </owl:NamedIndividual>
     
 
