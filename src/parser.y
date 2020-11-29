@@ -88,8 +88,18 @@ void writeVariableDeclaration(string var_name, string var_type, string var_scope
     cout << "\t\t<hasType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_type << "\"/>" << endl;
 	if(arraySz)
 		cout << "\t\t<Dimension rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">" << arraySz << "</Dimension>" << endl;
-	cout << "\t\tName rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">" << var_name << "</Name>" << endl;
+	cout << "\t\t<Name rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">" << var_name << "</Name>" << endl;
     cout << "\t</owl:NamedIndividual>" << endl << endl;
+}
+
+void writeFunctionDefinition(string functionName, string returnType, vector<string> parameters)
+{
+	cout << "\t<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << functionName << "\">" << endl;
+    cout << "\t\t<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function\"/>" << endl;
+	for(string s : parameters)
+    	cout << "\t\t<hasArgument rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<< s << "\"/>" << endl;
+    cout << "\t\t<hasReturnType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << returnType << "\"/>" << endl;
+    cout << "\t</owl:NamedIndividual>" << endl;
 }
 
 void fillScopeWithParams()
@@ -295,54 +305,19 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 		}
 		;
 		 
-func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScope();fillScopeWithParams();} compound_statement
+func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScope(); fillScopeWithParams();} compound_statement
 		{
-			//-------------------------------------------------------------------------
-			//assembly code generation
-			if($2->getName()=="main")
-				assemblyCodes="MAIN PROC\n\n";
-			else
-				assemblyCodes=$2->getName()+" PROC\n\n";
+			// ----------------------------------------
+			// generate rdf-triples
+			vector<string> parameters;
+			for(int i = 0; i < $4->edge.size(); i++)
+				parameters.push_back($4->edge[i]->getName());
 
-			//if main function then initialize data segment
-			if($2->getName()=="main"){
-				assemblyCodes+="\t;INITIALIZE DATA SEGMENT\n";
-				assemblyCodes+="\tMOV AX, @DATA\n";
-				assemblyCodes+="\tMOV DS, AX\n\n";
-			}
-
-			else{
-				assemblyCodes+="\tPUSH AX\n";
-				assemblyCodes+="\tPUSH BX\n";
-				assemblyCodes+="\tPUSH CX\n";
-				assemblyCodes+="\tPUSH DX\n";
-			}
-
-			//function body
-			assemblyCodes+=$7->getCode();
-
-			//ending of function
-			if($2->getName()=="main") {
-				assemblyCodes+="\n\tMOV AX, 4CH\n\tINT 21H";
-				assemblyCodes+=("\nMAIN ENDP\n\nEND MAIN");
-			}
-
-			else{
-				assemblyCodes+="\tPOP AX\n";
-				assemblyCodes+="\tPOP BX\n";
-				assemblyCodes+="\tPOP CX\n";
-				assemblyCodes+="\tPOP DX\n";
-
-				assemblyCodes+="RET\n";
-				assemblyCodes+=$2->getName()+" ENDP\n\n";
-			}
-				
-			//-------------------------------------------------------------------------
-			
+			writeFunctionDefinition($2->getName(), $1->getType(), parameters);
+			//-----------------------------------------
 
 			SymbolInfo *newSymbol=new SymbolInfo("function - "+$2->getName(),"func_definition");
 			$$=newSymbol;
-			$$->setCode(assemblyCodes);
 
 			//------------------------------------------
 			//current scope obtained, insert the function in the global scope
@@ -460,52 +435,14 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 		}
 		| type_specifier ID LPAREN RPAREN{table.EnterScope();} compound_statement
 		{
-			
-			//-------------------------------------------------------------------------
-			//assembly code generation
-			if($2->getName()=="main")
-				assemblyCodes="MAIN PROC\n\n";
-			else
-				assemblyCodes=$2->getName()+" PROC\n\n";
-
-			//if main function then initialize data segment
-			if($2->getName()=="main"){
-				assemblyCodes+="\t;INITIALIZE DATA SEGMENT\n";
-				assemblyCodes+="\tMOV AX, @DATA\n";
-				assemblyCodes+="\tMOV DS, AX\n\n";
-			}
-
-			else{
-				assemblyCodes+="\tPUSH AX\n";
-				assemblyCodes+="\tPUSH BX\n";
-				assemblyCodes+="\tPUSH CX\n";
-				assemblyCodes+="\tPUSH DX\n";
-			}
-
-			//function body
-			assemblyCodes+=$6->getCode();
-
-			//ending of function
-			if($2->getName()=="main") {
-				assemblyCodes+="\n\tMOV AX, 4CH\n\tINT 21H";
-				assemblyCodes+=("\nMAIN ENDP\n\nEND MAIN");
-			}
-
-			else{
-				assemblyCodes+="\tPOP AX\n";
-				assemblyCodes+="\tPOP BX\n";
-				assemblyCodes+="\tPOP CX\n";
-				assemblyCodes+="\tPOP DX\n";
-
-				assemblyCodes+="RET\n";
-				assemblyCodes+=$2->getName()+" ENDP\n\n";
-			}
-			//-------------------------------------------------------------------------
-			
+			// ----------------------------------------
+			// generate rdf-triples
+			vector<string> parameters;
+			writeFunctionDefinition($2->getName(), $1->getType(), parameters);
+			//-----------------------------------------
 
 			SymbolInfo *newSymbol=new SymbolInfo("function - "+$2->getName(),"func_definition");
 			$$=newSymbol;
-			$$->setCode(assemblyCodes);
 
 			//------------------------------------------
 			//current scope obtained, insert the function in the global scope
@@ -988,7 +925,6 @@ expression_statement : SEMICOLON {
 variable : ID
 		{
 			$$=$1;
-			cout << "id "<< $1->getCode()<<endl;
 
 			$$->setIdentity("var");
 			$$->idx=-1;
