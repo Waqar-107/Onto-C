@@ -21,6 +21,22 @@
     
 
 
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasArgument -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasArgument">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasReturnType -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasReturnType">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasType -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasType">
@@ -67,6 +83,15 @@
     
 
 
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Name -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Name">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -103,6 +128,14 @@
     <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Code_Element -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Code_Element"/>
+    
+
+
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Code_Element"/>
+    </owl:Class>
     
 
 
@@ -165,10 +198,28 @@
     
 
 
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#argTest -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#argTest">
+        <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Parameter"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float">
         <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Primitive_Type"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#foo -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#foo">
+        <rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function"/>
+        <hasArgument rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#argTest"/>
+        <hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
     </owl:NamedIndividual>
     
 
