@@ -264,12 +264,34 @@
     </owl:NamedIndividual>
 
 
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#src2">
-		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#dfs">
+		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function"/>
+		<hasArgument rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#src2"/>
+		<hasArgument rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#edgeCost2"/>
+		<hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
+	</owl:NamedIndividual>
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#bfs">
+		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function"/>
+		<hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float"/>
+	</owl:NamedIndividual>
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#graph1">
+		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Global_Variable"/>
 		<rdf:type>
 			<owl:Restriction>
 				<owl:onProperty rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType"/>
-				<owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
+				<owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Global_Variable"/>
+			</owl:Restriction>
+		</rdf:type>
+		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
+		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">graph1</Name>
+	</owl:NamedIndividual>
+
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#src2">
+		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Parameter"/>
+		<rdf:type>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType"/>
+				<owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Parameter"/>
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
@@ -277,11 +299,11 @@
 	</owl:NamedIndividual>
 
 	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#edgeCost2">
-		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
+		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Parameter"/>
 		<rdf:type>
 			<owl:Restriction>
 				<owl:onProperty rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType"/>
-				<owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
+				<owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Parameter"/>
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
@@ -300,14 +322,4 @@
 		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">val2</Name>
 	</owl:NamedIndividual>
 
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#dfs">
-		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function"/>
-		<hasArgument rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#src"/>
-		<hasArgument rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#edgeCost"/>
-		<hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-	</owl:NamedIndividual>
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#bfs">
-		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function"/>
-		<hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float"/>
-	</owl:NamedIndividual>
 </rdf:RDF>

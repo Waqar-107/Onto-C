@@ -1,3 +1,4 @@
+int graph;
 
 int dfs(int src, float edgeCost){
     int val;

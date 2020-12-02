@@ -9,6 +9,7 @@
 #include<algorithm>
 #include<map>
 #include "SymbolTable.h"
+#include "RDF_Utils.h"
 
 using namespace std;
 
@@ -38,6 +39,7 @@ vector<SymbolInfo*> arg_list;
 vector<pair<string,string>> variableListForInit;
 
 bool isReturning;
+variableStore vstore;
 
 void yyerror(const char *s)
 {
@@ -70,26 +72,6 @@ void readBaseOwl()
 	while(getline(cin, str)) {
 		cout << str << endl;
 	}
-}
-
-// var_name: variable name
-// var_type: type of the variable, e.g: int, float
-// var_scope: global or local: Local_Variable or Global_Variable
-void writeVariableDeclaration(string var_name, string var_type, string var_scope, int arraySz)
-{
-	cout << "\t<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<<var_name<<"\">" << endl;
-	cout << "\t\t<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
-    cout << "\t\t<rdf:type>" << endl;
-    cout << "\t\t\t<owl:Restriction>"<< endl;
-    cout << "\t\t\t\t<owl:onProperty rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType\"/>" << endl;
-    cout << "\t\t\t\t<owl:allValuesFrom rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_scope << "\"/>" << endl;
-    cout << "\t\t\t</owl:Restriction>" << endl;
-    cout << "\t\t</rdf:type>" << endl;
-    cout << "\t\t<hasType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << var_type << "\"/>" << endl;
-	if(arraySz)
-		cout << "\t\t<Dimension rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">" << arraySz << "</Dimension>" << endl;
-	cout << "\t\t<Name rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">" << var_name << "</Name>" << endl;
-    cout << "\t</owl:NamedIndividual>" << endl << endl;
 }
 
 void writeFunctionDefinition(string functionName, string returnType, vector<string> parameters)
@@ -307,11 +289,25 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 		 
 func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScope(); fillScopeWithParams();} compound_statement
 		{
+			//------------------------------------------
+			//current scope obtained, insert the function in the global scope
+			int id = table.getCurrentID();
+			for(int i = 0; i < params.size(); i++)
+				var_list.push_back(params[i]);
+
+			table.ExitScope();
+			//------------------------------------------
+
+
 			// ----------------------------------------
 			// generate rdf-triples
 			vector<string> parameters;
 			for(int i = 0; i < $4->edge.size(); i++)
-				parameters.push_back($4->edge[i]->getName());
+			{
+				parameters.push_back($4->edge[i]->getName() + stoi(id));
+				vstore.makeParameter($4->edge[i]->getName() + stoi(id));
+			}
+				
 
 			writeFunctionDefinition($2->getName(), $1->getType(), parameters);
 			//-----------------------------------------
@@ -319,14 +315,6 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 			SymbolInfo *newSymbol=new SymbolInfo("function - "+$2->getName(),"func_definition");
 			$$=newSymbol;
 
-			//------------------------------------------
-			//current scope obtained, insert the function in the global scope
-			int id=table.getCurrentID();
-			for(int i=0;i<params.size();i++)
-				var_list.push_back(params[i]);
-
-			table.ExitScope();
-			//------------------------------------------
 
 			//-----------------------------------------------------------------------
 			//semantic error: type_specifier void and return
@@ -596,8 +584,8 @@ var_declaration : type_specifier declaration_list SEMICOLON
 			$$=new SymbolInfo("var_declaration","var_declaration");
 			for(pair<string, string> p : variableListForInit)
 			{
-				if(table.getCurrentID() == 1) writeVariableDeclaration(p.first, variable_type, "Global_Variable", stoi(p.second));
-				else writeVariableDeclaration(p.first, variable_type, "Local_Variable", stoi(p.second));
+				if(table.getCurrentID() == 1) vstore.addVariable(p.first, variable_type, "Global_Variable", stoi(p.second));
+				else vstore.addVariable(p.first, variable_type, "Local_Variable", stoi(p.second));
 			}
 			
 			$2->edge.clear();
@@ -1600,13 +1588,15 @@ int main(int argc,char *argv[])
 	isReturning=false; currentFunction=0;
 	cnt_err=0; returnType_curr="none";
 
-	// read the base owl file andd write it to the output file
+	// read the base owl file and write it to the output file
 	freopen("base_onto.owl", "r", stdin);
 	freopen("codeontology.owl", "w", stdout);
 	readBaseOwl();
 
 	yyparse();
 
+	// write the variables
+	cout << vstore.variableRDF();
 	cout << "</rdf:RDF>" << endl;
 
 	//print the SymbolTable and other credentials
