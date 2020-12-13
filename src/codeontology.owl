@@ -270,15 +270,11 @@
 		<hasArgument rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#edgeCost2"/>
 		<hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
 	</owl:NamedIndividual>
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#bfs">
-		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function"/>
-		<hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#float"/>
-	</owl:NamedIndividual>
 	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#main">
 		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function"/>
 		<hasReturnType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
 	</owl:NamedIndividual>
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#graph1">
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#adjList1">
 		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Global_Variable"/>
 		<rdf:type>
 			<owl:Restriction>
@@ -287,7 +283,7 @@
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">graph1</Name>
+		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adjList1</Name>
 	</owl:NamedIndividual>
 
 	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#src2">
@@ -326,7 +322,7 @@
 		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">val2</Name>
 	</owl:NamedIndividual>
 
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#x4">
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#x3">
 		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
 		<rdf:type>
 			<owl:Restriction>
@@ -335,10 +331,10 @@
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x4</Name>
+		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x3</Name>
 	</owl:NamedIndividual>
 
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#y4">
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#y3">
 		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
 		<rdf:type>
 			<owl:Restriction>
@@ -347,10 +343,10 @@
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">y4</Name>
+		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">y3</Name>
 	</owl:NamedIndividual>
 
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#i4">
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#i3">
 		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
 		<rdf:type>
 			<owl:Restriction>
@@ -359,10 +355,10 @@
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">i4</Name>
+		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">i3</Name>
 	</owl:NamedIndividual>
 
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#j4">
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#j3">
 		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
 		<rdf:type>
 			<owl:Restriction>
@@ -371,10 +367,10 @@
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">j4</Name>
+		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">j3</Name>
 	</owl:NamedIndividual>
 
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#k4">
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#k3">
 		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
 		<rdf:type>
 			<owl:Restriction>
@@ -383,7 +379,7 @@
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">k4</Name>
+		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">k3</Name>
 	</owl:NamedIndividual>
 
 	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#T1">
@@ -398,7 +394,7 @@
 		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">T1</Name>
 	</owl:NamedIndividual>
 
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#v4">
+	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#v3">
 		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
 		<rdf:type>
 			<owl:Restriction>
@@ -407,19 +403,7 @@
 			</owl:Restriction>
 		</rdf:type>
 		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">v4</Name>
-	</owl:NamedIndividual>
-
-	<owl:NamedIndividual rdf:about="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#y4">
-		<rdf:type rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
-		<rdf:type>
-			<owl:Restriction>
-				<owl:onProperty rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#hasVariableType"/>
-				<owl:allValuesFrom rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Local_Variable"/>
-			</owl:Restriction>
-		</rdf:type>
-		<hasType rdf:resource="http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#int"/>
-		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">y4</Name>
+		<Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">v3</Name>
 	</owl:NamedIndividual>
 
 </rdf:RDF>

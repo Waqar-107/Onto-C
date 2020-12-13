@@ -83,7 +83,7 @@ public:
             string name = this->variables[i].var_name;
             ret += name + " hasIdentity Variable\n";
             ret += name + " hasScope " +  this->variables[i].var_scope + "\n";
-            ret += name + " hasType " + this->variables[i].var_type "\n";
+            ret += name + " hasType " + this->variables[i].var_type + "\n";
             
             if(this->variables[i].arraySz)
                 ret += name + " hasDimension " + toString(this->variables[i].arraySz) + "\n";
@@ -124,8 +124,8 @@ public:
     string functionRDF() 
     {
         string ret = "";
-        for(int i = 0; i < this->function.size(); i++) {
-            ret += "\t<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << this->functions[i].function_name << "\">\n";
+        for(int i = 0; i < this->functions.size(); i++) {
+            ret += "\t<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" + this->functions[i].function_name + "\">\n";
             ret += "\t\t<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function\"/>\n";
             
 	        for(string s : this->functions[i].parameters)
@@ -141,10 +141,10 @@ public:
     string functionKnowledgeBase()
     {
         string ret = "";
-        for(int i = 0; i < this->function.size(); i++) {
+        for(int i = 0; i < this->functions.size(); i++) {
             string name = this->functions[i].function_name;
             ret += name + " hasIdentity Function\n";
-            ret += name + " hasReturnType " + this->functions[i].return_type " \n"
+            ret += name + " hasReturnType " + this->functions[i].return_type + " \n";
             
 	        for(string s : this->functions[i].parameters)
     	        ret += name + " hasParameter " + s + "\n";
