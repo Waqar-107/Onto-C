@@ -1,5 +1,4 @@
-int graph;
-
+int adjList;
 int dfs(int src, float edgeCost){
     int val;
     val = 107;
@@ -7,7 +6,21 @@ int dfs(int src, float edgeCost){
     return val;
 }
 
+int main()
+{
+    int x, y;
+    int i, j, k;
 
-float bfs(){
-    return 0.0;
+    for(i = 0; i < 10; i++) {
+        int v;
+        if(i % 2 == 0){
+            y = 5;
+        }
+
+        else{
+            y = 10;
+        }
+    }
+
+    return 0;
 }

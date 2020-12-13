@@ -40,6 +40,7 @@ vector<pair<string,string>> variableListForInit;
 
 bool isReturning;
 variableStore vstore;
+functionStore fstore;
 
 void yyerror(const char *s)
 {
@@ -64,24 +65,6 @@ string stoi(int n)
 
 	reverse(temp.begin(),temp.end());
 	return temp;
-}
-
-void readBaseOwl()
-{
-	string str;
-	while(getline(cin, str)) {
-		cout << str << endl;
-	}
-}
-
-void writeFunctionDefinition(string functionName, string returnType, vector<string> parameters)
-{
-	cout << "\t<owl:NamedIndividual rdf:about=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << functionName << "\">" << endl;
-    cout << "\t\t<rdf:type rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#Function\"/>" << endl;
-	for(string s : parameters)
-    	cout << "\t\t<hasArgument rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#"<< s << "\"/>" << endl;
-    cout << "\t\t<hasReturnType rdf:resource=\"http://www.semanticweb.org/acer/ontologies/2020/10/Onto-C#" << returnType << "\"/>" << endl;
-    cout << "\t</owl:NamedIndividual>" << endl;
 }
 
 void fillScopeWithParams()
@@ -152,74 +135,7 @@ start : program {
 
 		 	if(!semanticErr && !cnt_err)
 		 	{
-		 		//init
-		 		string init=".MODEL SMALL\n.STACK 100H\n";
 		 		
-		 		init+=".DATA\n";
-		 		
-		 		//variables
-		 		for(int i=0;i<variableListForInit.size();i++){
-		 			if(variableListForInit[i].second=="0")
-		 				init+=("\t"+variableListForInit[i].first+" DW ?\n");
-		 			else
-		 				init+=("\t"+variableListForInit[i].first+" DW "+variableListForInit[i].second+" DUP(?)\n");
-		 		}
-
-		 		init+=".CODE\n";
-
-		 		//function for PRINTLN
-		 		init+="PRINT_ID PROC\n\n";
-		 		init+="\t;SAVE IN STACK\n";
-		 		init+="\tPUSH AX\n";
-		 		init+="\tPUSH BX\n";
-		 		init+="\tPUSH CX\n";
-		 		init+="\tPUSH DX\n\n";
-
-		 		init+="\t;CHECK IF NEGATIVE\n";
-		 		init+="\tOR AX, AX\n";
-		 		init+="\tJGE PRINT_NUMBER\n\n";
-		 		init+="\t;PRINT MINUS SIGN\n";
-		 		init+="\tPUSH AX\n";
-		 		init+="\tMOV AH, 2\n";
-		 		init+="\tMOV DL, '-'\n";
-		 		init+="\tINT 21H\n";
-		 		init+="\tPOP AX\n\n";
-		 		init+="\tNEG AX\n\n";
-		 		init+="\tPRINT_NUMBER:\n";
-		 		init+="\tXOR CX, CX\n";
-		 		init+="\tMOV BX, 10D\n\n";
-		 		init+="\tREPEAT_CALC:\n\n";
-		 		init+="\t\t;AX:DX- QUOTIENT:REMAINDER\n";
-		 		init+="\t\tXOR DX, DX\n";
-		 		init+="\t\tDIV BX  ;DIVIDE BY 10\n";
-		 		init+="\t\tPUSH DX ;PUSH THE REMAINDER IN STACK\n\n";
-		 		init+="\t\tINC CX\n\n";
-		 		init+="\t\tOR AX, AX\n";
-		 		init+="\t\tJNZ REPEAT_CALC\n\n";
-
-		 		init+="\tMOV AH, 2\n\n";
-		 		init+="\tPRINT_LOOP:\n";
-		 		init+="\t\tPOP DX\n";
-		 		init+="\t\tADD DL, 30H\n";
-		 		init+="\t\tINT 21H\n";
-		 		init+="\t\tLOOP PRINT_LOOP\n";
-
-		 		init+="\n\t;NEWLINE\n";
-		 		init+="\tMOV AH, 2\n";
-		 		init+="\tMOV DL, 0AH\n";
-		 		init+="\tINT 21H\n";
-		 		init+="\tMOV DL, 0DH\n";
-		 		init+="\tINT 21H\n\n";
-
-		 		init+="\tPOP AX\n";
-		 		init+="\tPOP BX\n";
-		 		init+="\tPOP CX\n";
-		 		init+="\tPOP DX\n\n";
-		 		init+="\tRET\n";
-		 		init+="PRINT_ID ENDP\n\n";
-
-		 		fprintf(asmCode,"%s",init.c_str());
-		 		fprintf(asmCode,"%s",$$->getCode().c_str());
 		 	}
 		}
 	;
@@ -300,16 +216,14 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 
 
 			// ----------------------------------------
-			// generate rdf-triples
+			// add the function in the storage
 			vector<string> parameters;
+            fstore.addFunction($2->getName(), $1->getType());
 			for(int i = 0; i < $4->edge.size(); i++)
 			{
-				parameters.push_back($4->edge[i]->getName() + stoi(id));
+				fstore.addParameter($2->getName(), $4->edge[i]->getName() + stoi(id));
 				vstore.makeParameter($4->edge[i]->getName() + stoi(id));
 			}
-				
-
-			writeFunctionDefinition($2->getName(), $1->getType(), parameters);
 			//-----------------------------------------
 
 			SymbolInfo *newSymbol=new SymbolInfo("function - "+$2->getName(),"func_definition");
@@ -424,9 +338,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 		| type_specifier ID LPAREN RPAREN{table.EnterScope();} compound_statement
 		{
 			// ----------------------------------------
-			// generate rdf-triples
-			vector<string> parameters;
-			writeFunctionDefinition($2->getName(), $1->getType(), parameters);
+			// add function to the store for generating knowledge-base 
+			fstore.addFunction($2->getName(), $1->getType());
 			//-----------------------------------------
 
 			SymbolInfo *newSymbol=new SymbolInfo("function - "+$2->getName(),"func_definition");
@@ -582,6 +495,8 @@ compound_statement : LCURL statements RCURL
 var_declaration : type_specifier declaration_list SEMICOLON
 		{
 			$$=new SymbolInfo("var_declaration","var_declaration");
+
+            // insert the variables in the store so that later we can generate the knowledge-base
 			for(pair<string, string> p : variableListForInit)
 			{
 				if(table.getCurrentID() == 1) vstore.addVariable(p.first, variable_type, "Global_Variable", stoi(p.second));
@@ -1589,15 +1504,13 @@ int main(int argc,char *argv[])
 	cnt_err=0; returnType_curr="none";
 
 	// read the base owl file and write it to the output file
-	freopen("base_onto.owl", "r", stdin);
-	freopen("codeontology.owl", "w", stdout);
-	readBaseOwl();
+	freopen("KnowledgeBase.txt", "w", stdout);
 
 	yyparse();
 
 	// write the variables
-	cout << vstore.variableRDF();
-	cout << "</rdf:RDF>" << endl;
+	cout << vstore.variableKnowledgeBase() << endl;
+    cout << fstore.functionKnowledgeBase() << endl;
 
 	//print the SymbolTable and other credentials
 	fprintf(error,"total lines read: %d\n",line-1);
