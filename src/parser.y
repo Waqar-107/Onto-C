@@ -16,7 +16,7 @@ using namespace std;
 int yyparse(void);
 int yylex(void);
 
-int cnt_err, semanticErr=0;
+int cnt_err, semanticErr = 0;
 extern int line;
 
 string variable_type;
@@ -25,8 +25,7 @@ string returnType_curr;
 string isReturningType;
 
 extern FILE *yyin;
-FILE *error,*asmCode,*optimized_asmCode;
-FILE *owlWriter, *owlReader;
+FILE *error,*asmCode;
 
 SymbolTable table(10);
 SymbolInfo *currentFunction;
@@ -87,17 +86,17 @@ void fillScopeWithParams()
 }
 
 
-int labelCount=1, tempCount=1; 
+int labelCount = 1, tempCount = 1; 
 string newLabel()
 {
-	string temp="L"+stoi(labelCount);
+	string temp = "L" + stoi(labelCount);
 	labelCount++;
 	return temp;
 }
 
 string newTemp()
 {
-	string temp="T"+stoi(tempCount);
+	string temp = "T" + stoi(tempCount);
 	tempCount++;
 
 	variableListForInit.push_back({temp,"0"});
@@ -712,6 +711,7 @@ statement : var_declaration {
 		}
 	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
 	  	{
+			//cout << "inside FOR " << currentFunction->getName() << endl;
 			$$=$3;
 
 			string label1=newLabel(), label2=newLabel();
@@ -775,6 +775,9 @@ statement : var_declaration {
 		}
 	  | WHILE LPAREN expression RPAREN statement
 		{
+			// cout << "inside while " << currentFunction->getName() << endl;
+			// cout << $3->getCode() << endl;
+
 			$$=new SymbolInfo("while","loop");
 
 			string label1=newLabel(), label2=newLabel();
@@ -1218,23 +1221,6 @@ unary_expression : ADDOP unary_expression
 		{
 			$$=$2;
 			string temp=newTemp();
-
-			//codes like "+const" or "+var" or "-const" or "-var"
-			//need actions only for negs
-			if($1->getName()=="-"){
-				assemblyCodes=$$->getCode();
-				assemblyCodes+=("\n\tMOV AX, "+$2->asmName+"\n");
-				assemblyCodes+=("\tNEG AX\n");
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-			}
-
-			else{
-				assemblyCodes=$$->getCode();
-				assemblyCodes+=("\n\tMOV AX, "+$2->asmName+"\n");
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-			}
-
-			$$->setCode(assemblyCodes);
 			$$->setName(temp);
 			$$->asmName=temp;
 		}  

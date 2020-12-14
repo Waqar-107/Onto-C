@@ -86,7 +86,7 @@ public:
             ret += name + " hasType " + this->variables[i].var_type + "\n";
             
             if(this->variables[i].arraySz)
-                ret += name + " hasDimension " + toString(this->variables[i].arraySz) + "\n";
+                ret += name + " hasDimension " + toString(this->variables[i].arraySz) + "\n\n";
         }
 
         return ret;
@@ -147,9 +147,22 @@ public:
             ret += name + " hasReturnType " + this->functions[i].return_type + " \n";
             
 	        for(string s : this->functions[i].parameters)
-    	        ret += name + " hasParameter " + s + "\n";
+    	        ret += name + " hasParameter " + s + "\n\n";
         }
 
         return ret;
+    }
+};
+
+struct loopDescription {
+    int start, end, increment;
+    string scope;
+
+    loopDescription(){}
+    loopDescription(int start, int end, int increment, string scope) {
+        this->start = start;
+        this->end = end;
+        this->increment = increment;
+        this->scope = scope;
     }
 };
