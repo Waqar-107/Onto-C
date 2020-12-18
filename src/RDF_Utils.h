@@ -177,14 +177,56 @@ public:
 };
 
 struct loopDescription {
-    int start, end, increment;
-    string scope;
+    int start, end, increment, scopeId, loopId;
+    string scope, type; // type is For or While
 
     loopDescription(){}
-    loopDescription(int start, int end, int increment, string scope) {
-        this->start = start;
-        this->end = end;
-        this->increment = increment;
-        this->scope = scope;
+    loopDescription(int loopId, int scopeId, string type) {
+        this->loopId = loopId;
+        this->scopeId = scopeId;
+        this->type = type;
+    }
+};
+
+class loopStore
+{
+public:
+    vector<loopDescription> loops;
+    map<string, int> mapping;
+    map<int, int> loopNumbering;
+
+    loopStore(){}
+    // returns the loops unique identity
+    string addLoop(int scopeId, string type) {
+        int loopId = loopNumbering[scopeId] + 1;
+        loopNumbering[scopeId] = loopId;
+
+        loops.push_back(loopDescription(loopId, scopeId, type));
+
+        string id = toString(scopeId) + "_" + toString(loopId);
+        mapping[id] = loops.size() - 1;
+
+        return id;
+    }
+
+    void addScopeNames(map<int, string> scopeMap) {
+        for(int i = 0; i < this->loops.size(); i++) {
+            this->loops[i].scope = scopeMap[this->loops[i].scopeId];
+        }
+    }
+
+    string loopKnowledgeGraph() {
+        string ret = "";
+        for(int i = 0; i < this->loops.size(); i++) {
+            string id = toString(this->loops[i].scopeId) + "_" + toString(this->loops[i].loopId);
+            string name = this->loops[i].type + "_" + id;
+
+            ret += name + " hasIdentity Loop\n";
+            ret += name + " hasScope " + this->loops[i].scope + "\n";
+
+            ret += "\n";
+        }
+
+        return ret;
     }
 };

@@ -4,7 +4,16 @@ int dfs(int src, float edgeCost){
     int arr[118];
     val = 107;
 
+    for(val = 5; val < 7; val++){}
+
     return val;
+}
+
+int union_find()
+{
+    int k;
+    for(k = 0; k < 10; k++){}
+    for(k = 4; k < 55; k++){}
 }
 
 int main()

@@ -29,6 +29,7 @@ FILE *error,*asmCode;
 
 SymbolTable table(10);
 SymbolInfo *currentFunction;
+map<int, string> scopeMapping;
 
 vector<string> statement_list;
 
@@ -41,6 +42,7 @@ bool isReturning;
 variableStore vstore;
 functionStore fstore;
 globalStore gstore;
+loopStore lstore;
 
 void yyerror(const char *s)
 {
@@ -217,6 +219,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 
 			// ----------------------------------------
 			// add the function in the storage
+			scopeMapping[id] = $2->getName();
+			cout << id << " " << scopeMapping[table.getCurrentID()] << endl;
 			vector<string> parameters;
 			gstore.add("hasFunction " + $2->getName());
             fstore.addFunction($2->getName(), $1->getType());
@@ -339,7 +343,9 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 		| type_specifier ID LPAREN RPAREN{table.EnterScope();} compound_statement
 		{
 			// ----------------------------------------
-			// add function to the store for generating knowledge-base 
+			// add function to the store for generating knowledge-graph
+			scopeMapping[table.getCurrentID()] = $2->getName();
+			cout << table.getCurrentID() << " " << scopeMapping[table.getCurrentID()] << endl;
 			fstore.addFunction($2->getName(), $1->getType());
 			//-----------------------------------------
 
@@ -717,27 +723,12 @@ statement : var_declaration {
 		}
 	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
 	  	{
-			//cout << "inside FOR " << currentFunction->getName() << endl;
+			cout << "inside FOR " << scopeMapping[table.getCurrentID()] <<" "<<table.getCurrentID()<< endl;
+			// ----------------------------------------------
+			string loopName = lstore.addLoop(table.getCurrentID(), "For");
+			//-----------------------------------------------
+
 			$$=$3;
-
-			string label1=newLabel(), label2=newLabel();
-			
-			assemblyCodes=$$->getCode();
-			assemblyCodes+=(label1+":\n");	//REPEAT
-			
-			assemblyCodes+=$4->getCode();
-			
-			assemblyCodes+=("\tMOV AX, "+$4->getName()+"\n");
-			assemblyCodes+="\tCMP AX, 0\n";
-			assemblyCodes+="\tJE "+label2+"\n";
-
-			assemblyCodes+=$7->getCode();
-			assemblyCodes+=$5->getCode();
-			assemblyCodes+="\tJMP "+label1+"\n";
-			
-			assemblyCodes+=("\t"+label2+":\n");
-
-			$$->setCode(assemblyCodes);
 		}
 	  | IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE
 	  	{
@@ -781,28 +772,12 @@ statement : var_declaration {
 		}
 	  | WHILE LPAREN expression RPAREN statement
 		{
-			// cout << "inside while " << currentFunction->getName() << endl;
-			// cout << $3->getCode() << endl;
+			cout << "inside while " << currentFunction->getName() << endl;
+			// ----------------------------------------------
+			string loopName = lstore.addLoop(table.getCurrentID(), "While");
+			//-----------------------------------------------
 
 			$$=new SymbolInfo("while","loop");
-
-			string label1=newLabel(), label2=newLabel();
-			
-			assemblyCodes=(label1+":\n");	//REPEAT
-			
-			//check if we can continue executing
-			assemblyCodes+=$3->getCode();
-
-			assemblyCodes+=("\tMOV AX, "+$3->getName()+"\n");
-			assemblyCodes+="\tCMP AX, 0\n";
-			assemblyCodes+="\tJE "+label2+"\n";
-
-			assemblyCodes+=$5->getCode();	//execute the statements inside while
-			assemblyCodes+="\tJMP "+label1+"\n";
-			
-			assemblyCodes+=("\t"+label2+":\n");
-
-			$$->setCode(assemblyCodes);
 		}
 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
 	  	{
@@ -1504,6 +1479,9 @@ int main(int argc,char *argv[])
 	cout << gstore.globalKnowledgeGraph() << endl;
 	cout << vstore.variableKnowledgeGraph() << endl;
     cout << fstore.functionKnowledgeGraph() << endl;
+
+	lstore.addScopeNames(scopeMapping);
+	cout << lstore.loopKnowledgeGraph() << endl;
 
 	//print the SymbolTable and other credentials
 	fprintf(error,"total lines read: %d\n",line-1);
