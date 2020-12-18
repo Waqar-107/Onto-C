@@ -17,4 +17,4 @@ variable -
 * has value - later
 * has scope e.g: global or function name
 
-Global
+Global Scope will be the root

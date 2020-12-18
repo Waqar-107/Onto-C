@@ -40,6 +40,7 @@ vector<pair<string,string>> variableListForInit;
 bool isReturning;
 variableStore vstore;
 functionStore fstore;
+globalStore gstore;
 
 void yyerror(const char *s)
 {
@@ -217,6 +218,7 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 			// ----------------------------------------
 			// add the function in the storage
 			vector<string> parameters;
+			gstore.add("hasFunction " + $2->getName());
             fstore.addFunction($2->getName(), $1->getType());
 			for(int i = 0; i < $4->edge.size(); i++)
 			{
@@ -498,7 +500,11 @@ var_declaration : type_specifier declaration_list SEMICOLON
             // insert the variables in the store so that later we can generate the knowledge-base
 			for(pair<string, string> p : variableListForInit)
 			{
-				if(table.getCurrentID() == 1) vstore.addVariable(p.first, variable_type, "Global_Variable", stoi(p.second));
+				if(table.getCurrentID() == 1) {
+					vstore.addVariable(p.first, variable_type, "Global_Variable", stoi(p.second));
+					gstore.add("hasVariable " + p.first);
+				}
+
 				else vstore.addVariable(p.first, variable_type, "Local_Variable", stoi(p.second));
 			}
 			
@@ -1490,13 +1496,14 @@ int main(int argc,char *argv[])
 	cnt_err=0; returnType_curr="none";
 
 	// read the base owl file and write it to the output file
-	freopen("KnowledgeBase.txt", "w", stdout);
+	freopen("KnowledgeGraph.txt", "w", stdout);
 
 	yyparse();
 
 	// write the variables
-	cout << vstore.variableKnowledgeBase() << endl;
-    cout << fstore.functionKnowledgeBase() << endl;
+	cout << gstore.globalKnowledgeGraph() << endl;
+	cout << vstore.variableKnowledgeGraph() << endl;
+    cout << fstore.functionKnowledgeGraph() << endl;
 
 	//print the SymbolTable and other credentials
 	fprintf(error,"total lines read: %d\n",line-1);

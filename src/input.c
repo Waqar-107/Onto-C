@@ -1,6 +1,7 @@
 int adjList;
 int dfs(int src, float edgeCost){
     int val;
+    int arr[118];
     val = 107;
 
     return val;

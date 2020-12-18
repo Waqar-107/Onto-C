@@ -22,6 +22,24 @@ string toString(int n)
 	return temp;
 }
 
+class globalStore {
+    // relationship + invidiual name
+    vector<string> globals;
+public:
+    void add(string s) {
+        globals.push_back(s);
+    }
+
+    string globalKnowledgeGraph() {
+        string ret = "";
+        for(string s : globals) {
+            ret += "Global " + s + "\n";
+        }
+
+        return ret;
+    }
+};
+
 struct variableDescription{
     string var_name, var_type, var_scope;
     int arraySz;
@@ -76,7 +94,7 @@ public:
         return ret;
     }
 
-    string variableKnowledgeBase()
+    string variableKnowledgeGraph()
     {
         string ret = "";
         for(int i = 0; i < this->variables.size(); i++) {
@@ -86,7 +104,9 @@ public:
             ret += name + " hasType " + this->variables[i].var_type + "\n";
             
             if(this->variables[i].arraySz)
-                ret += name + " hasDimension " + toString(this->variables[i].arraySz) + "\n\n";
+                ret += name + " hasDimension " + toString(this->variables[i].arraySz) + "\n";
+            
+            ret += "\n";
         }
 
         return ret;
@@ -138,7 +158,7 @@ public:
         return ret;
     }
 
-    string functionKnowledgeBase()
+    string functionKnowledgeGraph()
     {
         string ret = "";
         for(int i = 0; i < this->functions.size(); i++) {
@@ -147,7 +167,9 @@ public:
             ret += name + " hasReturnType " + this->functions[i].return_type + " \n";
             
 	        for(string s : this->functions[i].parameters)
-    	        ret += name + " hasParameter " + s + "\n\n";
+    	        ret += name + " hasParameter " + s + "\n";
+            
+            ret += "\n";
         }
 
         return ret;
