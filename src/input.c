@@ -11,8 +11,9 @@ int dfs(int src, float edgeCost){
 
 int union_find()
 {
-    int k;
-    for(k = 0; k < 10; k++){}
+    int k, cmp;
+    cmp = 10;
+    for(k = 0; k < cmp; k++){}
     for(k = 4; k < 55; k++){}
 }
 

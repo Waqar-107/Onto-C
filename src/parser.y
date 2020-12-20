@@ -221,7 +221,6 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 			// ----------------------------------------
 			// add the function in the storage
 			scopeMapping[id] = $2->getName();
-			cout << id << " " << scopeMapping[table.getCurrentID()] << endl;
 			vector<string> parameters;
 			gstore.add("hasFunction " + $2->getName());
             fstore.addFunction($2->getName(), $1->getType());
@@ -346,7 +345,6 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN{table.EnterScop
 			// ----------------------------------------
 			// add function to the store for generating knowledge-graph
 			scopeMapping[table.getCurrentID()] = $2->getName();
-			cout << table.getCurrentID() << " " << scopeMapping[table.getCurrentID()] << endl;
 			fstore.addFunction($2->getName(), $1->getType());
 			//-----------------------------------------
 
@@ -726,6 +724,7 @@ statement : var_declaration {
 	  	{
 			// ----------------------------------------------
 			string loopName = lstore.addLoop(table.getCurrentID(), "For");
+			lstore.addEndCondition(loopName, $4->getCode());
 			//-----------------------------------------------
 
 			$$=$3;
@@ -772,12 +771,12 @@ statement : var_declaration {
 		}
 	  | WHILE LPAREN expression RPAREN statement
 		{
-			cout << "while end: " << $3->getCode() << endl;
 			// ----------------------------------------------
 			string loopName = lstore.addLoop(table.getCurrentID(), "While");
+			lstore.addEndCondition(loopName, $3->getCode());
 			//-----------------------------------------------
 
-			$$=new SymbolInfo("while","loop");
+			$$ = new SymbolInfo("while","loop");
 		}
 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
 	  	{
@@ -804,9 +803,8 @@ statement : var_declaration {
 expression_statement : SEMICOLON {
 			$$=new SymbolInfo("SEMICOLON","SEMICOLON");
 		}			
-			| expression SEMICOLON {
-			$$=$1;
-			cout << "exp; " << $1->getCode() << endl;
+		| expression SEMICOLON {
+			$$ = $1;
 		} 
 			;
 	  
@@ -870,8 +868,6 @@ variable : ID
  expression : logic_expression
 		{
 			$$=$1;
-			expressionRaw = $1->getCode();
-			cout << "logic " << expressionRaw << endl;
 		}	
 	   | variable ASSIGNOP logic_expression 	
 		{
@@ -921,8 +917,6 @@ variable : ID
 		
 
 			//-------------------------------------------------------------
-			//#code generation
-			//cout<<$1->getName()<<" "<<$1->idx<<endl;
 			
 			assemblyCodes=$3->getCode()+$1->getCode();
 			assemblyCodes+=("\n\tMOV AX, "+$3->asmName+"\n");
@@ -966,67 +960,21 @@ logic_expression : rel_expression
 
 
 			//------------------------------------------------------------------
-			//code generation
-			assemblyCodes=$$->getCode()+$3->getCode();
-			
-			string temp=newTemp();
-			string label1=newLabel();
-			string label2=newLabel();
-
-			assemblyCodes+=("\n\tMOV AX, "+$1->asmName+"\n");
-			assemblyCodes+=("\tMOV BX, "+$3->asmName+"\n");
-
-			if($2->getName()=="&&"){
-				assemblyCodes+=("\tCMP AX, 1\n");
-				assemblyCodes+=("\tJNE "+label1+"\n");
-				
-				assemblyCodes+=("\tCMP BX, 1\n");
-				assemblyCodes+=("\tJNE "+label1+"\n");
-
-				assemblyCodes+=("\tMOV AX, 1\n");
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-				assemblyCodes+=("\tJMP "+label2+"\n");
-				
-				assemblyCodes+=("\n\t"+label1+":\n");
-				assemblyCodes+=("\tMOV AX, 0\n");
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-				
-				
-				assemblyCodes+=("\n\t"+label2+":\n");
-			}
-
-			else if($2->getName()=="||"){
-				assemblyCodes+=("\tCMP AX, 1\n");
-				assemblyCodes+=("\tJE "+label1+"\n");
-				
-				assemblyCodes+=("\tCMP BX, 1\n");
-				assemblyCodes+=("\tJE "+label1+"\n");
-				
-				assemblyCodes+=("\tMOV AX, 0\n");
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-				assemblyCodes+=("\tJMP "+label2+"\n");
-				
-				assemblyCodes+=("\n\t"+label1+":\n");
-				assemblyCodes+=("\tMOV AX, 1\n");
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-				
-				assemblyCodes+=("\n\t"+label2+":\n");
-			}
-
-			$$->setCode(assemblyCodes);
-			$$->setName(temp);
-			$$->asmName=temp;
+			// raw code for loops
+			string raw_codes = $$->getCode() + $2->getName() + $3->getCode();
+			cout << "inside logical exp " << raw_codes << endl;
+			$$->setCode(raw_codes);
 			//------------------------------------------------------------------
 		}
 		 ;
 			
 rel_expression : simple_expression 
 		{
-			$$=$1;
+			$$ = $1;
 		}
 		| simple_expression RELOP simple_expression	
 		{
-			$$=$1;
+			$$ = $1;
 
 			//------------------------------------------------------------------
 			//#semantic: RELOP MUST BE INT
@@ -1041,53 +989,9 @@ rel_expression : simple_expression
 
 
 			//------------------------------------------------------------------
-			//code generation
-			//here two expressions are already in two variables, we compare them
-			//if true send them to label1, else assign false to the new temp and jump to label2
-			//from label1 assign true, eventually it will get down to label2
-
-			assemblyCodes=$$->getCode()+$3->getCode();
-			
-			assemblyCodes+=("\n\tMOV AX, "+$1->asmName+"\n");
-			assemblyCodes+=("\tCMP AX, "+$3->asmName+"\n");
-
-			string temp=newTemp();
-			string label1=newLabel();
-			string label2=newLabel();
-
-			if($2->getName()=="<"){
-				assemblyCodes+=("\tJL "+label1+"\n");
-			}
-			
-			else if($2->getName()=="<="){
-				assemblyCodes+=("\tJLE "+label1+"\n");
-			}
-
-			else if($2->getName()==">"){
-				assemblyCodes+=("\tJG "+label1+"\n");	
-			}
-				
-			else if($2->getName()==">="){
-				assemblyCodes+=("\tJGE "+label1+"\n");	
-			}
-				
-			else if($2->getName()=="=="){
-				assemblyCodes+=("\tJE "+label1+"\n");	
-			}
-				
-			else{
-				assemblyCodes+=("\tJNE "+label1+"\n");	
-			}
-				
-			assemblyCodes+=("\n\tMOV "+temp+", 0\n");
-			assemblyCodes+=("\tJMP "+label2+"\n");
-
-			assemblyCodes+=("\n\t"+label1+":\n\tMOV "+temp+", 1\n");
-			assemblyCodes+=("\n\t"+label2+":\n");
-				
-			$$->setName(temp);
-			$$->asmName=temp;
-			$$->setCode(assemblyCodes);
+			// generate raw codes for loop
+			string raw_codes = $$->getName() + " " + $2->getName() + " " + $3->getName();
+			$$->setCode(raw_codes);
 
 			delete $3;
 			//------------------------------------------------------------------
@@ -1096,11 +1000,11 @@ rel_expression : simple_expression
 				
 simple_expression : term
 		{
-			$$=$1;
+			$$ = $1;
 		} 
 		  | simple_expression ADDOP term
 		{
-			$$=$1;
+			$$ = $1;
 
 			if($1->getVariableType()=="float" || $3->getVariableType()=="float")
 				$$->setVariableType("float");
@@ -1235,6 +1139,8 @@ factor : variable
 			$$=$1;
 
 			//-------------------------------------------------------------------
+			//****************************************************************************
+			// this code chunk appends scope-id to the variables
 			//for code generation purpose we concatenate the current id with the variable name
 			$$->asmName=$$->getName()+stoi(table.getCurrentID());
 			//-------------------------------------------------------------------
