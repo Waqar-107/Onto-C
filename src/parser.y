@@ -23,6 +23,7 @@ string variable_type;
 string codes, assemblyCodes;
 string returnType_curr;
 string isReturningType;
+string expressionRaw;
 
 extern FILE *yyin;
 FILE *error,*asmCode;
@@ -723,7 +724,6 @@ statement : var_declaration {
 		}
 	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
 	  	{
-			cout << "inside FOR " << scopeMapping[table.getCurrentID()] <<" "<<table.getCurrentID()<< endl;
 			// ----------------------------------------------
 			string loopName = lstore.addLoop(table.getCurrentID(), "For");
 			//-----------------------------------------------
@@ -772,7 +772,7 @@ statement : var_declaration {
 		}
 	  | WHILE LPAREN expression RPAREN statement
 		{
-			cout << "inside while " << currentFunction->getName() << endl;
+			cout << "while end: " << $3->getCode() << endl;
 			// ----------------------------------------------
 			string loopName = lstore.addLoop(table.getCurrentID(), "While");
 			//-----------------------------------------------
@@ -806,6 +806,7 @@ expression_statement : SEMICOLON {
 		}			
 			| expression SEMICOLON {
 			$$=$1;
+			cout << "exp; " << $1->getCode() << endl;
 		} 
 			;
 	  
@@ -869,6 +870,8 @@ variable : ID
  expression : logic_expression
 		{
 			$$=$1;
+			expressionRaw = $1->getCode();
+			cout << "logic " << expressionRaw << endl;
 		}	
 	   | variable ASSIGNOP logic_expression 	
 		{

@@ -196,6 +196,7 @@ public:
     map<int, int> loopNumbering;
 
     loopStore(){}
+    
     // returns the loops unique identity
     string addLoop(int scopeId, string type) {
         int loopId = loopNumbering[scopeId] + 1;
@@ -221,8 +222,11 @@ public:
             string id = toString(this->loops[i].scopeId) + "_" + toString(this->loops[i].loopId);
             string name = this->loops[i].type + "_" + id;
 
+            ret += name + " hasScopeId " + toString(this->loops[i].scopeId) + "\n";
+            ret += name + " hasLoopId " + toString(this->loops[i].loopId) + "\n";
             ret += name + " hasIdentity Loop\n";
             ret += name + " hasScope " + this->loops[i].scope + "\n";
+            ret += name + " hasLoopType " + this->loops[i].type + "\n";
 
             ret += "\n";
         }
