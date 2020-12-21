@@ -712,22 +712,25 @@ statements : statement
 	   ;
 	   
 statement : var_declaration {
-			$$=$1;
+			$$ = $1;
 		}
 	  | expression_statement {
-			$$=$1;
+			$$ = $1;
 		}
 	  | compound_statement {
-			$$=$1;
+			$$ = $1;
 		}
 	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
 	  	{
 			// ----------------------------------------------
 			string loopName = lstore.addLoop(table.getCurrentID(), "For");
 			lstore.addEndCondition(loopName, $4->getCode());
+			lstore.addInitialization(loopName, $3->getCode());
+
+			// cout << "loopStart- " << $3->getCode() << "|" << $3->getName() << endl;
 			//-----------------------------------------------
 
-			$$=$3;
+			$$ = $3;
 		}
 	  | IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE
 	  	{
@@ -801,7 +804,7 @@ statement : var_declaration {
 	  ;
 	  
 expression_statement : SEMICOLON {
-			$$=new SymbolInfo("SEMICOLON","SEMICOLON");
+			$$ = new SymbolInfo("SEMICOLON","SEMICOLON");
 		}			
 		| expression SEMICOLON {
 			$$ = $1;
@@ -918,22 +921,9 @@ variable : ID
 
 			//-------------------------------------------------------------
 			
-			assemblyCodes=$3->getCode()+$1->getCode();
-			assemblyCodes+=("\n\tMOV AX, "+$3->asmName+"\n");
+			string raw_codes = $1->getName() + " = " + $3->getName();
 			
-			string temp=$1->getName()+stoi(table.getCurrentID());
-			if($1->idx==-1){
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-			}
-
-			//array
-			else{
-				assemblyCodes+=("\tMOV "+temp+"+"+stoi($1->idx)+"*2, AX\n");
-			}
-
-			$$->setCode(assemblyCodes);
-			$$->setName(temp);
-			$$->asmName=temp;
+			$$->setCode(raw_codes);
 			//-------------------------------------------------------------
 
 		}
@@ -941,11 +931,11 @@ variable : ID
 			
 logic_expression : rel_expression
 		{
-			$$=$1;
+			$$ = $1;
 		} 	
 		 | rel_expression LOGICOP rel_expression 	
 		{
-			$$=$1;
+			$$ = $1;
 
 			//------------------------------------------------------------------
 			//#semantic: LOGICOP MUST BE INT
@@ -1012,29 +1002,8 @@ simple_expression : term
 				$$->setVariableType("int");
 
 			
-			assemblyCodes=$$->getCode();
-			assemblyCodes+=$3->getCode();
-
-			// move one of the operands to a register
-			//perform addition or subtraction with the other operand and 
-			//move the result in a temporary variable  
-			
-			string temp=newTemp();	
-			if($2->getName()=="+"){
-				assemblyCodes+=("\n\tMOV AX, "+$1->asmName+"\n");
-				assemblyCodes+=("\tADD AX, "+$3->asmName+"\n");
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-			}
-			
-			else{
-				assemblyCodes+=("\n\tMOV AX, "+$1->asmName+"\n");
-				assemblyCodes+=("\tSUB AX, "+$3->asmName+"\n");
-				assemblyCodes+=("\tMOV "+temp+", AX\n");
-			}
-		
-			$$->setCode(assemblyCodes);
-			$$->setName(temp);
-			$$->asmName=temp;
+			//assemblyCodes=$$->getCode();
+			// $$->setCode(assemblyCodes);
 
 			delete $3;
 		} 
@@ -1042,7 +1011,7 @@ simple_expression : term
 					
 term :	unary_expression
 		{
-			$$=$1;
+			$$ = $1;
 		}
      |  term MULOP unary_expression
 		{
@@ -1199,6 +1168,8 @@ factor : variable
 						}
 					}
 
+					//-----------------------------------------------
+					// call to a function
 					assemblyCodes+="\tCALL "+func->getName()+"\n";
 					$$->setCode(assemblyCodes);
 				}

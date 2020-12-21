@@ -177,8 +177,8 @@ public:
 };
 
 struct loopDescription {
-    int start, increment, scopeId, loopId;
-    string endCondition = "";
+    int scopeId, loopId;
+    string endCondition = "", initializationCondition = "";
     string scope, type; // type is For or While
 
     loopDescription(){}
@@ -221,6 +221,10 @@ public:
         this->loops[this->mapping[loopName]].endCondition = condition;
     }
 
+    void addInitialization(string loopName, string init) {
+        this->loops[this->mapping[loopName]].initializationCondition = init;
+    }
+
     string loopKnowledgeGraph() {
         string ret = "";
         for(int i = 0; i < this->loops.size(); i++) {
@@ -232,6 +236,10 @@ public:
             ret += name + " hasIdentity Loop\n";
             ret += name + " hasScope " + this->loops[i].scope + "\n";
             ret += name + " hasLoopType " + this->loops[i].type + "\n";
+
+            if(this->loops[i].initializationCondition.length())
+                ret += name + " hasInitializationCondition \"" + this->loops[i].initializationCondition + "\"\n";
+
             if(this->loops[i].endCondition.length())
                 ret += name + " hasEndCondition \"" + this->loops[i].endCondition + "\"\n";
 
