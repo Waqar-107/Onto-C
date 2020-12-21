@@ -727,8 +727,6 @@ statement : var_declaration {
 			lstore.addEndCondition(loopName, $4->getCode());
 			lstore.addInitialization(loopName, $3->getCode());
 			lstore.addIncDec(loopName, $5->getCode());
-
-			cout << "expression in for" << $5->getCode() << endl;
 			//-----------------------------------------------
 
 			$$ = $3;
@@ -952,7 +950,6 @@ logic_expression : rel_expression
 			//------------------------------------------------------------------
 			// raw code for loops
 			string raw_codes = $$->getCode() + $2->getName() + $3->getCode();
-			cout << "inside logical exp " << raw_codes << endl;
 			$$->setCode(raw_codes);
 			//------------------------------------------------------------------
 		}
@@ -991,6 +988,7 @@ rel_expression : simple_expression
 simple_expression : term
 		{
 			$$ = $1;
+			//cout << "just term "<<$$->getCode() << "|"<<$$->getName()<<endl;
 		} 
 		  | simple_expression ADDOP term
 		{
@@ -1065,7 +1063,8 @@ unary_expression : ADDOP unary_expression
 		 | factor 
 		{
 			$$ = $1;
-			$$->setCode($$->getName());
+			//cout << "inside factor " << $$->getCode() << "|" << $$->getName() << endl;
+			//$$->setCode($$->getName());
 		}
 		 ;
 	
@@ -1156,12 +1155,15 @@ factor : variable
 	| CONST_INT
 		{
 			$$ = $1;
+			$$->setCode($$->getName());
 			$$->asmName = $$->getName();
 			$$->setVariableType("int");
 		} 
 	| CONST_FLOAT
 		{
-			$$=$1;$$->asmName=$$->getName();
+			$$=$1;
+			$$->setCode($$->getName());
+			$$->asmName=$$->getName();
 			$$->setVariableType("float");
 		}
 	| variable INCOP
@@ -1190,6 +1192,7 @@ factor : variable
 				$$->setIdentity($1->getIdentity()) ;
 
 				string raw_codes = $1->getName() + "++";
+				//cout << "inc set to " << raw_codes << endl;
 				$$->setCode(raw_codes);
 			}
 			//-----------------------------------------------------------------
