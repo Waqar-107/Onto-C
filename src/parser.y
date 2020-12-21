@@ -798,6 +798,8 @@ statement : var_declaration {
 
 			assemblyCodes=$$->getCode();
 
+			//cout << "returning " << $2->getCode() << "|" << $2->getName() << endl;
+
 			$$->setCode(assemblyCodes);
 		}
 	  ;
@@ -1121,10 +1123,6 @@ factor : variable
 								fprintf(error,"semantic error found in line %d: type mismatch, wrong type of argument given\n\n",line);
 								break;
 							}
-							else{
-								assemblyCodes+="\n\tMOV AX, "+arg_list[i]->getName()+stoi(table.getCurrentID())+"\n";
-								assemblyCodes+="\tMOV "+func->params[i]->getName()+stoi(func->id)+", AX\n";
-							}
 						}
 
 						else{
@@ -1134,9 +1132,9 @@ factor : variable
 					}
 
 					//-----------------------------------------------
-					// call to a function
-					assemblyCodes+="\tCALL "+func->getName()+"\n";
-					//$$->setCode(assemblyCodes);
+					// call to a function - add to the function : function x calls function y
+					// who is calling, who is being called
+					fstore.addFunctionCall(table.getCurrentID(), $1->getName());
 				}
 			}
 
@@ -1192,7 +1190,6 @@ factor : variable
 				$$->setIdentity($1->getIdentity()) ;
 
 				string raw_codes = $1->getName() + "++";
-				//cout << "inc set to " << raw_codes << endl;
 				$$->setCode(raw_codes);
 			}
 			//-----------------------------------------------------------------
@@ -1291,6 +1288,8 @@ int main(int argc,char *argv[])
 	// write the variables
 	cout << gstore.globalKnowledgeGraph() << endl;
 	cout << vstore.variableKnowledgeGraph() << endl;
+
+	fstore.assignFunctionNames(scopeMapping);
     cout << fstore.functionKnowledgeGraph() << endl;
 
 	lstore.addScopeNames(scopeMapping);

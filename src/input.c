@@ -13,12 +13,20 @@ int union_find()
     cmp = 10;
     for(k = 0; k < cmp; k++){}
     for(k = 4; k >= 0; k--){}
+
+    dfs(2, 2.7);
+
+    return cmp * 10;
 }
 
 int main()
 {
     int x, y;
     int i, j, k;
+
+    union_find();
+    dfs(5, 6.6);
+
 
     for(i = 0; i < 10; i++) {
         int v;

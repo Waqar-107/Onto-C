@@ -116,6 +116,7 @@ public:
 struct functionDescription{
     string function_name, return_type;
     vector<string> parameters;
+    vector<string> functionCallings;
 
     functionDescription(){}
     functionDescription(string function_name, string return_type) {
@@ -129,6 +130,7 @@ class functionStore
 public:
     vector<functionDescription> functions;
     map<string, int> mapping;
+    map<int, vector<string>> functionCallings;
 
     functionStore(){}
 
@@ -139,6 +141,21 @@ public:
 
     void addParameter(string function_name, string param) {
         this->functions[this->mapping[function_name]].parameters.push_back(param);
+    }
+
+    void addFunctionCall(int function_scope_id, string calling) {
+        this->functionCallings[function_scope_id].push_back(calling);
+    }
+
+    void assignFunctionNames(map<int, string> scopeMapping) {
+        for(auto itr = this->functionCallings.begin(); itr != this->functionCallings.end(); itr++) {
+            int id = itr->first;
+            string name = scopeMapping[id];
+            for(string s : this->functionCallings[id]) {
+                this->functions[this->mapping[name]].functionCallings.push_back(s);
+            }
+        }
+
     }
 
     string functionRDF() 
@@ -168,6 +185,9 @@ public:
             
 	        for(string s : this->functions[i].parameters)
     	        ret += name + " hasParameter " + s + "\n";
+            
+            for(string s : this->functions[i].functionCallings)
+                ret += name + " callsFunction " + s + "\n";
             
             ret += "\n";
         }
