@@ -727,6 +727,8 @@ statement : var_declaration {
 			lstore.addEndCondition(loopName, $4->getCode());
 			lstore.addInitialization(loopName, $3->getCode());
 			lstore.addIncDec(loopName, $5->getCode());
+
+			cout << "expression in for" << $5->getCode() << endl;
 			//-----------------------------------------------
 
 			$$ = $3;
@@ -920,8 +922,7 @@ variable : ID
 
 			//-------------------------------------------------------------
 			
-			string raw_codes = $1->getName() + " = " + $3->getName();
-			
+			string raw_codes = $1->getName() + " = " + $3->getCode();
 			$$->setCode(raw_codes);
 			//-------------------------------------------------------------
 
@@ -1000,9 +1001,8 @@ simple_expression : term
 			else
 				$$->setVariableType("int");
 
-			
-			//assemblyCodes=$$->getCode();
-			// $$->setCode(assemblyCodes);
+			string raw_codes = $1->getName() + " " + $2->getName() + " " + $3->getName();
+			$$->setCode(raw_codes);
 
 			delete $3;
 		} 
@@ -1019,35 +1019,8 @@ term :	unary_expression
 
 			//------------------------------------------------------------------------
 			//code generation	
-			assemblyCodes += $3->getCode();
-			assemblyCodes += "\n\tMOV AX, "+ $1->asmName+"\n";
-			assemblyCodes += "\tMOV BX, "+ $3->asmName+"\n";
-			
-			string temp=newTemp();
-
-			if($2->getName()=="*"){
-				assemblyCodes += "\tMUL BX\n";
-				assemblyCodes += "\tMOV "+temp+", AX\n";
-			}
-
-			else if($2->getName()=="/"){
-				// clear dx, perform 'div bx' and mov ax to temp
-				assemblyCodes += "\tXOR DX, DX\n";
-				assemblyCodes += "\tDIV BX\n";
-				assemblyCodes += "\tMOV "+temp+" , AX\n";
-			}
-
-			else{
-				// "%" operation clear dx, perform 'div bx' and mov dx to temp
-				assemblyCodes += "\tXOR DX, DX\n";
-				assemblyCodes += "\tDIV BX\n";
-				assemblyCodes += "\tMOV "+temp+" , DX\n";
-				
-			}
-
-			$$->setName(temp);
-			$$->asmName=temp;
-			$$->setCode(assemblyCodes);
+			string raw_codes = $1->getName() + " " + $2->getName() + " " + $3->getName();
+			$$->setCode(raw_codes);
 
 			//------------------------------------------------------------------------
 
@@ -1082,29 +1055,23 @@ unary_expression : ADDOP unary_expression
 		}  
 		 | NOT unary_expression 
 		{
-			$$=$2;
+			$$ = $2;
 
 			//codes like !const or !var_name
-			string temp=newTemp();
 
-			assemblyCodes=$$->getCode();
-			assemblyCodes+=("\n\tMOV AX, "+$2->asmName+"\n");
-			assemblyCodes+=("\tNOT AX\n");
-			assemblyCodes+=("\tMOV "+temp+", AX\n");
-
-			$$->setCode(assemblyCodes);
-			$$->setName(temp);
-			$$->asmName=temp;
+			// assemblyCodes=$$->getCode();
+			// $$->setCode(assemblyCodes);
 		}
 		 | factor 
 		{
-			$$=$1;
+			$$ = $1;
+			$$->setCode($$->getName());
 		}
 		 ;
 	
 factor : variable
 		{
-			$$=$1;
+			$$ = $1;
 
 			//-------------------------------------------------------------------
 			//****************************************************************************
@@ -1170,7 +1137,7 @@ factor : variable
 					//-----------------------------------------------
 					// call to a function
 					assemblyCodes+="\tCALL "+func->getName()+"\n";
-					$$->setCode(assemblyCodes);
+					//$$->setCode(assemblyCodes);
 				}
 			}
 
@@ -1188,8 +1155,8 @@ factor : variable
 		}
 	| CONST_INT
 		{
-			$$=$1;
-			$$->asmName=$$->getName();
+			$$ = $1;
+			$$->asmName = $$->getName();
 			$$->setVariableType("int");
 		} 
 	| CONST_FLOAT
