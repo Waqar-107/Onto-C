@@ -14,7 +14,7 @@ int union_find()
     int k, cmp;
     cmp = 10;
     for(k = 0; k < cmp; k++){}
-    for(k = 4; k < 55; k++){}
+    for(k = 4; k >= 0; k--){}
 }
 
 int main()
@@ -37,6 +37,11 @@ int main()
     while(i <= 10){
         i--;
     }
+
+    for(i = 0; i < 10; i++){}
+    for(i = 10; i > 0; i--){}
+    for(i = 0; i < 10; i = i + 2){}
+    for(i = 10; i > 0; i = i - 2){}
 
     return 0;
 }

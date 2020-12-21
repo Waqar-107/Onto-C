@@ -726,8 +726,7 @@ statement : var_declaration {
 			string loopName = lstore.addLoop(table.getCurrentID(), "For");
 			lstore.addEndCondition(loopName, $4->getCode());
 			lstore.addInitialization(loopName, $3->getCode());
-
-			// cout << "loopStart- " << $3->getCode() << "|" << $3->getName() << endl;
+			lstore.addIncDec(loopName, $5->getCode());
 			//-----------------------------------------------
 
 			$$ = $3;
@@ -870,11 +869,11 @@ variable : ID
 	 
  expression : logic_expression
 		{
-			$$=$1;
+			$$ = $1;
 		}	
 	   | variable ASSIGNOP logic_expression 	
 		{
-			$$=$1;
+			$$ = $1;
 
 			//---------------------------------------------------------------------------
 			//#semantic: Array Index: You have to check whether there is index used with array and vice versa.
@@ -1223,27 +1222,8 @@ factor : variable
 				$$->setCode($$->getCode());
 				$$->setIdentity($1->getIdentity()) ;
 
-				assemblyCodes=$$->getCode();
-				string var_name=$1->getName()+stoi(table.getCurrentID());
-
-				$$->setName(var_name);
-
-				//array
-				if(temp->sz){
-					//idx+1 th element will be accessed using array_name+idx*2
-
-					assemblyCodes+=("\tMOV AX, "+var_name+"+"+stoi($1->idx)+"*2\n");
-					assemblyCodes+=("\tINC AX\n");
-					assemblyCodes+=("\tMOV "+var_name+"+"+stoi($1->idx)+"*2, AX\n");
-				}
-				
-				else{
-					assemblyCodes+=("\tMOV AX, "+var_name+"\n");
-					assemblyCodes+=("\tINC AX\n");
-					assemblyCodes+=("\tMOV "+var_name+", AX\n");
-				}
-				
-				$$->setCode(assemblyCodes);
+				string raw_codes = $1->getName() + "++";
+				$$->setCode(raw_codes);
 			}
 			//-----------------------------------------------------------------
 		} 
@@ -1278,25 +1258,8 @@ factor : variable
 
 				$$->setName(var_name);
 
-				//array
-				if(temp->sz){
-					//idx+1 th element will be accessed using array_name+idx*2
-
-					assemblyCodes+=("\tMOV AX, "+var_name+"+"+stoi($1->idx)+"*2\n");
-					assemblyCodes+=("\tMOV "+temp_str+", AX\n");
-					assemblyCodes+=("\tDEC AX\n");
-					assemblyCodes+=("\tMOV "+var_name+"+"+stoi($1->idx)+"*2, AX\n");
-				}
-				
-				else{
-					assemblyCodes+=("\tMOV AX, "+var_name+"\n");
-					assemblyCodes+=("\tMOV "+temp_str+", AX\n");
-					assemblyCodes+=("\tDEC AX\n");
-					assemblyCodes+=("\tMOV "+var_name+", AX\n");
-				}
-				
-				$$->setCode(assemblyCodes);
-				$$->setName(temp_str);
+				string raw_codes = $1->getName() + "--";
+				$$->setCode(raw_codes);
 			}
 			//-----------------------------------------------------------------
 			
